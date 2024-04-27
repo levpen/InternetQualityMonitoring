@@ -1,0 +1,25 @@
+name: Python application
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11.9
+        
+    - name: Poetry install
+      run: pip install poetry
+
+    - name: Dependencies install
+      run: poetry install
+
+    - name: Lint
+      run: poetry run ruff check
