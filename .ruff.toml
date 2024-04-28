@@ -32,12 +32,12 @@ exclude = [
 line-length = 88
 indent-width = 4
 
-target-version = "py310"
+target-version = "py311"
 
 [lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
 select = ["N", "F", "E", "D", "LOG", "ANN", "S", "B", "T20", "ARG", "RUF"]
-ignore = []
+ignore = ["S603"] # Open bug https://github.com/PyCQA/bandit/issues/333
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]

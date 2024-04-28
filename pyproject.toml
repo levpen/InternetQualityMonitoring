@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 ruff = "^0.4.2"
 coverage = "^7.5.0"
+streamlit = "^1.33.0"
 
 
 [build-system]
