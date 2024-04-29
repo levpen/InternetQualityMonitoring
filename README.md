@@ -14,7 +14,7 @@ The Internet Quality Monitoring project aims to provide a solution for tracking 
 
 To deploy the Internet Quality Monitoring service, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your_username/your_repository.git`
+1. Clone the repository: `git clone https://github.com/levpen/InternetQualityMonitoring.git`
 2. Navigate to the project directory: `cd internet-quality-monitoring`
 3. Build the Docker image: `docker build -t internet-quality-monitoring .`
 4. Run the Docker container: `docker run -p 8501:8501 internet-quality-monitoring`
