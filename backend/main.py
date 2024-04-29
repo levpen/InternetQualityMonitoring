@@ -12,21 +12,21 @@ def collect_and_append_data(host: str, records: []) -> None:
     records.append(record)
 
 if __name__ == "__main__":
-    while True:
-        with MetricsRepository(DB_PATH) as metrics_repo:
-            hosts = metrics_repo.get_hosts()
+    
+    with MetricsRepository(DB_PATH) as metrics_repo:
+        while True:
+            hosts = ['.'.join(item) for item in metrics_repo.get_hosts()]
             records = []
             threads = []
             for host in hosts:
                 thread = Thread(target=collect_and_append_data, args=(host, records))
                 threads.append(thread)
                 thread.start()
-
+            
             sleep(1)
             for thread in threads:
                 thread.join()
-
-            for record in records:
-                metrics_repo.save_record(record)
-
-
+            
+            for host, record in zip(hosts, records, strict=False):
+                metrics_repo.save_record(host, record)
+            
