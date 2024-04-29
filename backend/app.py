@@ -63,15 +63,15 @@ with MetricsRepository(db_path) as metrics_repo:
     #Host deletion
     old_host = st.text_input('Enter site or ip to delete from hosts', '')
     if col1.button('Delete host'):
-      try:
-        # metrics_repo.add_host(new_host)
+      # try:
+        metrics_repo.delete_host(old_host)
         st.rerun()
-      except sqlite3.IntegrityError:
-        st.write('Enter old site')
+      # except sqlite3.IntegrityError:
+      #   st.write('Enter old site')
 
   #Host to monitor selection
   host_to_monitor = st.selectbox('Enter host to monitor', ['.'.join(item) for item in hosts], index=None, placeholder="Select host...")
-  print(host_to_monitor)
+  # print(host_to_monitor)
   if host_to_monitor:
     print_statistics(host_to_monitor)
 
