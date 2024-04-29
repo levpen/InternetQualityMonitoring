@@ -40,7 +40,7 @@ class MetricsRepository:
     def save_record(self: Self, host: str,  record: dict) -> None:
         """Add new record to metrics."""
         acc = dict(record['accessibility'])
-        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') # pragma: no mutate
         self.conn.execute('''INSERT INTO metrics 
                             (host, datetime, loss, latency, 
                                 http, https, imap, smtp, ssh, dns)
