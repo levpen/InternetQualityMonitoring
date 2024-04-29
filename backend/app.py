@@ -1,6 +1,9 @@
 """Module for running frontend part."""
+import json
+import sqlite3
 import streamlit as st
 import pandas as pd
+from persistence import MetricsRepository
 from collect_data import collect_data
 
 #UI setup
@@ -11,10 +14,6 @@ st.set_page_config(
 )
 st.title('Internet Quality Dashboard')
 
-#Input field
-title = st.text_input('Enter site or ip', 'ya.ru')
-st.write('The current site is', title)
-
 def print_statistics(title: str) -> None :
   """Do prints Accessibility data on protocols and live graph on latency and loss."""
   arr = collect_data(title)
@@ -22,6 +21,7 @@ def print_statistics(title: str) -> None :
   loss = []
   latency = []
   placeholder = st.empty()
+  col1, col2 = st.columns(2)
   
   for _ in range(100):
     arr = collect_data(title)
@@ -29,11 +29,12 @@ def print_statistics(title: str) -> None :
     latency.append(arr['latency'])
 
     with placeholder.container():
+      
       #Accessibility table
       st.markdown("### "+title+" protocols accessibility")
       df = pd.DataFrame(accessibility, columns=['Protocol', 'Status'])
       st.write(df)
-
+      
       #Loss and Latency graph
       st.markdown("### Detailed Loss and Latency graph")
       chart_data = pd.DataFrame(
@@ -42,6 +43,48 @@ def print_statistics(title: str) -> None :
       st.line_chart(chart_data)
       st.dataframe(chart_data)
 
-print_statistics(title)
+#Database connection
+db_path = "metrics.db"
+with MetricsRepository(db_path) as metrics_repo:
+  hosts = metrics_repo.get_hosts()
+  col1, col2 = st.columns(2)
+  with col2:
+    st.dataframe({"Monitored hosts": hosts}, use_container_width=True)
+  with col1:
+  #Host addition
+    new_host = st.text_input('Enter site or ip to add to hosts', 'ya.ru')
+    if st.button('Add host'):
+      try:
+        metrics_repo.add_host(new_host)
+        st.rerun()
+      except sqlite3.IntegrityError:
+        st.write('Enter new site')
+    
+    #Host deletion
+    old_host = st.text_input('Enter site or ip to delete from hosts', '')
+    if col1.button('Delete host'):
+      try:
+        # metrics_repo.add_host(new_host)
+        st.rerun()
+      except sqlite3.IntegrityError:
+        st.write('Enter old site')
+
+  #Host to monitor selection
+  host_to_monitor = st.selectbox('Enter host to monitor', ['.'.join(item) for item in hosts], index=None, placeholder="Select host...")
+  print(host_to_monitor)
+  if host_to_monitor:
+    print_statistics(host_to_monitor)
+
+  
+
+# def load_as_json(data: str) -> None:
+#     """Loads data as json."""
+#     json_data = json.dumps(data)
+
+
+# # print_statistics(title)
+# st.dataframe({"site": ["ya.ru", ""]})
+# if st.button('Load data'):
+#   load_as_json()
 
 
