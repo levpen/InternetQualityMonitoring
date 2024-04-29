@@ -22,13 +22,13 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install poetry
         poetry install
-
+        apt install -y inetutils-ping nmap 
     - name: Run Ruff
       run: |
         poetry run ruff check
 
     - name: Test
       run: |
-        poetry run coverage run -m pytest
+        poetry run coverage run -m pytest tests
         poetry run coverage report --fail-under=60
 

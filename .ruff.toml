@@ -58,3 +58,6 @@ skip-magic-trailing-comma = false
 
 # Like Black, automatically detect the appropriate line ending.
 line-ending = "auto"
+
+[lint.per-file-ignores]
+"tests/test_collect_data.py" = ["S101"]
