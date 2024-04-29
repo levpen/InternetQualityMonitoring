@@ -14,14 +14,22 @@ st.set_page_config(
 )
 st.title('Internet Quality Dashboard')
 
-def print_statistics(title: str) -> None :
+def print_statistics(title: str, db: sqlite3) -> None :
   """Do prints Accessibility data on protocols and live graph on latency and loss."""
+  # db_data = db.get_metrics(24)
+  # print(db_data[0])
+  # filtered_data = filter(lambda x: x[1] == title, db_data)
+  # loss_data = [*map(lambda x: x[3], filtered_data)]
+  # print(*filtered_data)
+  # latency_data = [*map(lambda x: x[4], filtered_data)]
+  # print(loss_data, latency_data)
+
   arr = collect_data(title)
+  print(title)
   accessibility = arr['accessibility']
   loss = []
   latency = []
   placeholder = st.empty()
-  col1, col2 = st.columns(2)
   
   for _ in range(100):
     arr = collect_data(title)
@@ -73,9 +81,13 @@ with MetricsRepository(db_path) as metrics_repo:
   host_to_monitor = st.selectbox('Enter host to monitor', ['.'.join(item) for item in hosts], index=None, placeholder="Select host...")
   # print(host_to_monitor)
   if host_to_monitor:
-    print_statistics(host_to_monitor)
+    print_statistics(host_to_monitor, metrics_repo)
 
   
+
+
+
+
 
 # def load_as_json(data: str) -> None:
 #     """Loads data as json."""
