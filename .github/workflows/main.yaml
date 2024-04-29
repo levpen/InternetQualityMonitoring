@@ -34,13 +34,13 @@ jobs:
         poetry run mutmut run --no-progress --CI
         poetry run mutmut html
 
-    - name: 📤 Upload Mutation Test Report
+    - name: Upload Mutation Test Report
       uses: actions/upload-artifact@v2
       with:
         name: mutmut-html-report
         path: html/bookshelf
 
-    - name: 🗃️ Cache Mutation Test Artifacts
+    - name: Cache Mutation Test Artifacts
       uses: actions/cache/save@v3
       with:
         path: .mutmut-cache
