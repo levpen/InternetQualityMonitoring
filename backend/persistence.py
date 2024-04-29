@@ -66,6 +66,13 @@ class MetricsRepository:
                           (host,))
         self.conn.commit()
 
+    def delete_host(self: Self, host: str) -> None:
+        """Delete host from metrics."""
+        self.conn.execute('''DELETE FROM hosts
+                                 WHERE host = ?''',
+                          (host,))
+        self.conn.commit()
+
     def get_hosts_cursor(self: Self) -> sqlite3.Cursor:
         """Get cursor to access hosts."""
         return self.conn.execute('''SELECT * FROM hosts''')
