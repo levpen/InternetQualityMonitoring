@@ -1,9 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   build:
@@ -47,5 +44,5 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: .mutmut-cache
-        key: mutmut-cache-${{ github.ref_name }}-${{ hashFiles('bookshelf/*.py')
+        key: mutmut-cache-${{ github.ref_name }}-${{ hashFiles('bookshelf/*.py') }}
 
