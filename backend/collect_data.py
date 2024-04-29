@@ -14,12 +14,12 @@ def get_loss_and_latency(host: str, n_packet: int = 5) -> (float, float):
     """Do getting packet loss and latency of resource, using ICMP port via ping."""
     process = Popen(['/bin/sh', '-c', f'ping -c {n_packet} {host}'], stdout=PIPE)
     stdout, _ = process.communicate()
-    if stdout.decode('utf-8').find("Name or service not known"):
+    if stdout.decode('utf-8').find("Name or service not known") != -1:
         return (100.0, 0.0)
     packetloss = float(next(x for x in stdout.decode('utf-8').split('\n') 
                         if x.find('packet loss') != -1).split('%')[0].split(' ')[-1])
     latency = float(stdout.decode('utf-8').split('\n')[-3].split(' ')[-1][:-2])/n_packet
-
+    
     return (packetloss, latency)
 
 
