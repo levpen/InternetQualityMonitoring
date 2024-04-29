@@ -21,12 +21,14 @@ if __name__ == "__main__":
                 thread = Thread(target=collect_and_append_data, args=(host, records))
                 threads.append(thread)
                 thread.start()
-
+            
             sleep(1)
             for thread in threads:
                 thread.join()
-
-            for record in records:
-                metrics_repo.save_record(record)
+            print(records)
+            
+            for host, record in zip(hosts, records):
+                print(record)
+                metrics_repo.save_record(host, record)
 
 
