@@ -1,20 +1,24 @@
 """Storage module."""
 import sqlite3
 from datetime import datetime
+from typing import Self
 
 
 class MetricsRepository:
     """Repository for saving and retrieving metrics."""
 
-    def __init__(self: object, db_path: str) -> None:
+    def __init__(self: Self, db_path: str) -> None:
         """MetricsRepository constructor."""
         self.db_path = db_path
 
-    def __enter__(self: object) -> object:
+    def __enter__(self: Self) -> Self:
         """Open database connection."""
         self.conn = sqlite3.connect(self.db_path)
+        self.conn.execute('''CREATE TABLE IF NOT EXISTS hosts
+                 (host TEXT PRIMARY KEY NOT NULL);''')
         self.conn.execute('''CREATE TABLE IF NOT EXISTS metrics
                  (ID       INTEGER  PRIMARY KEY AUTOINCREMENT NOT NULL,
+                  host     TEXT     NOT NULL,
                   datetime DATETIME NOT NULL,
                   loss     NUMERIC  NOT NULL,
                   latency  NUMERIC  NOT NULL,
@@ -33,14 +37,16 @@ class MetricsRepository:
         self.conn.commit()
         return self
 
-    def save_record(self: object, record: dict) -> None:
+    def save_record(self: Self, host: str,  record: dict) -> None:
         """Add new record to metrics."""
         acc = dict(record['accessibility'])
         current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self.conn.execute('''INSERT INTO metrics 
-                            (datetime, loss, latency, http, https, imap, smtp, ssh, dns)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                            (host, datetime, loss, latency, 
+                                http, https, imap, smtp, ssh, dns)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                           (
+                              host,
                               current_datetime,
                               record['loss'],
                               record['latency'],
@@ -53,7 +59,31 @@ class MetricsRepository:
                           ))
         self.conn.commit()
 
-    def __exit__(self: object, *args: [any]) -> object:
+    def add_host(self: Self, host: str) -> None:
+        """Add new host to metrics."""
+        self.conn.execute('''INSERT INTO hosts (host)
+                                 VALUES (?)''',
+                          (host,))
+        self.conn.commit()
+
+    def get_hosts_cursor(self: Self) -> sqlite3.Cursor:
+        """Function to get hosts cursor."""
+        return self.conn.execute('''SELECT * FROM hosts''')
+
+    def get_hosts(self: Self):
+        """Function that gets all rows from hosts table."""
+        return self.get_hosts_cursor().fetchall()
+
+    def get_metrics_cursor(self: Self, limit: int) -> sqlite3.Cursor:
+        """Function to get metrics cursor."""
+        return self.conn.execute('''SELECT * FROM metrics ORDER BY datetime DESC LIMIT ?''',
+                                 (limit,))
+
+    def get_metrics(self: Self, limit: int):
+        """Function that gets all rows from metrics table."""
+        return self.get_metrics_cursor(limit).fetchall()
+
+    def __exit__(self: Self, *args: [any]) -> None:
         """Close connection."""
         self.conn.close()
 
@@ -76,7 +106,7 @@ class MetricsRepository:
 #         metrics_repo.save_record(record)
 
 # if __name__ == "__main__":
-#     conn = sqlite3.connect('metrics.db')
-#     c = conn.execute('''SELECT * FROM metrics''')
-#     for row in c:
-#         print(row)
+# conn = sqlite3.connect('metrics.db')
+# c = conn.execute('''SELECT * FROM metrics''')
+# for row in c:
+#     print(row)
