@@ -67,21 +67,24 @@ class MetricsRepository:
         self.conn.commit()
 
     def get_hosts_cursor(self: Self) -> sqlite3.Cursor:
-        """Function to get hosts cursor."""
+        """Get cursor to access hosts."""
         return self.conn.execute('''SELECT * FROM hosts''')
 
-    def get_hosts(self: Self):
-        """Function that gets all rows from hosts table."""
+    def get_hosts(self: Self) -> list:
+        """Fetch all hosts from database."""
         return self.get_hosts_cursor().fetchall()
 
-    def get_metrics_cursor(self: Self, limit: int) -> sqlite3.Cursor:
-        """Function to get metrics cursor."""
-        return self.conn.execute('''SELECT * FROM metrics ORDER BY datetime DESC LIMIT ?''',
-                                 (limit,))
+    def get_metrics_cursor(self: Self, hour_offset: int) -> sqlite3.Cursor:
+        """Get cursor to access metrics with days offset."""
+        return self.conn.execute(
+            '''SELECT * FROM metrics 
+                   WHERE datetime > DATETIME("now", ?) 
+                   ORDER BY datetime''',
+            ("-" + str(hour_offset) + " hour",))
 
-    def get_metrics(self: Self, limit: int):
-        """Function that gets all rows from metrics table."""
-        return self.get_metrics_cursor(limit).fetchall()
+    def get_metrics(self: Self, hour_offset: int) -> list:
+        """Fetch all metrics from database."""
+        return self.get_metrics_cursor(hour_offset).fetchall()
 
     def __exit__(self: Self, *args: [any]) -> None:
         """Close connection."""
