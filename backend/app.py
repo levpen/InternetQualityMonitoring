@@ -6,7 +6,7 @@ import pandas as pd
 from persistence import MetricsRepository
 from collect_data import collect_data
 
-#UI setup
+# UI setup
 st.set_page_config(
     page_title="Internet Quality Dashboard",
     page_icon="✅",
@@ -98,5 +98,3 @@ with MetricsRepository(db_path) as metrics_repo:
 # st.dataframe({"site": ["ya.ru", ""]})
 # if st.button('Load data'):
 #   load_as_json()
-
-

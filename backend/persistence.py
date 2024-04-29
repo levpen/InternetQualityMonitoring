@@ -23,17 +23,35 @@ class MetricsRepository:
                   loss     NUMERIC  NOT NULL,
                   latency  NUMERIC  NOT NULL,
                   http     TEXT     NOT NULL 
-                    CHECK (http == 'open' or http == 'filtered' or http == 'closed'),
+                    CHECK (http == 'open' 
+                        or http == 'filtered' 
+                        or http == 'closed'
+                        or http == 'unreachable'),
                   https    TEXT     NOT NULL 
-                    CHECK (https == 'open' or https == 'filtered' or https == 'closed'),
+                    CHECK (https == 'open' 
+                        or https == 'filtered'
+                        or https == 'closed'
+                        or https == 'unreachable'),
                   imap     TEXT     NOT NULL 
-                    CHECK (imap == 'open' or imap == 'filtered' or imap == 'closed'),
+                    CHECK (imap == 'open' 
+                        or imap == 'filtered' 
+                        or imap == 'closed'
+                        or imap == 'unreachable'),
                   smtp     TEXT     NOT NULL 
-                    CHECK (smtp == 'open' or smtp == 'filtered' or smtp == 'closed'),
+                    CHECK (smtp == 'open' 
+                        or smtp == 'filtered' 
+                        or smtp == 'closed'
+                        or smtp == 'unreachable'),
                   ssh      TEXT     NOT NULL 
-                    CHECK (ssh == 'open' or ssh == 'filtered' or ssh == 'closed'),
+                    CHECK (ssh == 'open' 
+                        or ssh == 'filtered' 
+                        or ssh == 'closed'
+                        or ssh == 'unreachable'),
                   dns      TEXT     NOT NULL 
-                    CHECK (dns == 'open' or dns == 'filtered' or dns == 'closed'));''')
+                    CHECK (dns == 'open' 
+                        or dns == 'filtered' 
+                        or dns == 'closed'
+                        or dns == 'unreachable'));''')
         self.conn.commit()
         return self
 
