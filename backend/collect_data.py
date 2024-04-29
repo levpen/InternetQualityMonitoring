@@ -19,7 +19,7 @@ def get_loss_and_latency(host: str, n_packet: int = 5) -> (float, float):
         return (100.0, 0.0)
     packetloss = float(next(x for x in stdout.decode('utf-8').split('\n')
                             if x.find('packet loss') != -1).split('%')[0].split(' ')[-1])
-    latency = float(stdout.decode('utf-8').split('\n')[-3].split(' ')[-1][:-2]) / n_packet
+    latency = float(stdout.decode('utf-8').split('\n')[-2].split(' = ')[1].split('/')[0])
 
     return (packetloss, latency)
 

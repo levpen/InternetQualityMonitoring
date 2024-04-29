@@ -19,7 +19,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install poetry
         poetry install
-        apt install -y inetutils-ping nmap 
+        sudo apt install -y inetutils-ping nmap 
     - name: Run Ruff
       run: |
         poetry run ruff check
