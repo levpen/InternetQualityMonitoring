@@ -1,10 +1,10 @@
 """Module for running frontend part."""
-import json
+# import json
 import sqlite3
 import streamlit as st
 import pandas as pd
 from persistence import MetricsRepository
-from collect_data import collect_data
+from collect_data import PORTS
 
 # UI setup
 st.set_page_config(
@@ -16,40 +16,37 @@ st.title('Internet Quality Dashboard')
 
 def print_statistics(title: str, db: sqlite3) -> None :
   """Do prints Accessibility data on protocols and live graph on latency and loss."""
-  # db_data = db.get_metrics(24)
-  # print(db_data[0])
-  # filtered_data = filter(lambda x: x[1] == title, db_data)
-  # loss_data = [*map(lambda x: x[3], filtered_data)]
-  # print(*filtered_data)
-  # latency_data = [*map(lambda x: x[4], filtered_data)]
-  # print(loss_data, latency_data)
+  db_data = db.get_metrics(24)
+  # print(db_data[2])
+  filtered_data = [*filter(lambda x: x[1] == title, db_data)]
+  
+  #Accessibility table
+  accessibility_data = filtered_data[0][5:]
+  st.markdown("### "+title+" protocols accessibility")
+  df = pd.DataFrame({'Protocol': PORTS.keys(),'Status': accessibility_data})
+  st.write(df)
+  
+  loss_data = [*map(lambda x: x[3], filtered_data)]
+  latency_data = [*map(lambda x: x[4], filter(lambda x: x[1] == title, db_data))]
 
-  arr = collect_data(title)
-  print(title)
-  accessibility = arr['accessibility']
-  loss = []
-  latency = []
   placeholder = st.empty()
   
-  for _ in range(100):
-    arr = collect_data(title)
-    loss.append(arr['loss'])
-    latency.append(arr['latency'])
-
-    with placeholder.container():
+  
+  with placeholder.container():
       
-      #Accessibility table
-      st.markdown("### "+title+" protocols accessibility")
-      df = pd.DataFrame(accessibility, columns=['Protocol', 'Status'])
-      st.write(df)
+    # #Accessibility table
+    # st.markdown("### "+title+" protocols accessibility")
+    # df = pd.DataFrame(accessibility, columns=['Protocol', 'Status'])
+    # st.write(df)
       
-      #Loss and Latency graph
-      st.markdown("### Detailed Loss and Latency graph")
-      chart_data = pd.DataFrame(
-        {'Loss': loss, 'Latency': latency}
-      )
-      st.line_chart(chart_data)
-      st.dataframe(chart_data)
+    #Loss and Latency graph
+    st.markdown("### Detailed Loss and Latency graph")
+    chart_data = pd.DataFrame(
+      {'Loss': loss_data, 'Latency': latency_data}
+    )
+    st.line_chart(chart_data)
+    st.dataframe(chart_data)
+    st.rerun()
 
 #Database connection
 db_path = "metrics.db"
@@ -78,7 +75,10 @@ with MetricsRepository(db_path) as metrics_repo:
       #   st.write('Enter old site')
 
   #Host to monitor selection
-  host_to_monitor = st.selectbox('Enter host to monitor', ['.'.join(item) for item in hosts], index=None, placeholder="Select host...")
+  host_to_monitor = st.selectbox('Enter host to monitor',
+                                 ['.'.join(item) for item in hosts],
+                                 index=None,
+                                 placeholder="Select host...")
   # print(host_to_monitor)
   if host_to_monitor:
     print_statistics(host_to_monitor, metrics_repo)
