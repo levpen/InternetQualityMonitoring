@@ -40,7 +40,7 @@ class MetricsRepository:
     def save_record(self: Self, host: str,  record: dict) -> None:
         """Add new record to metrics."""
         acc = dict(record['accessibility'])
-        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S') # pragma: no mutate
         self.conn.execute('''INSERT INTO metrics 
                             (host, datetime, loss, latency, 
                                 http, https, imap, smtp, ssh, dns)
@@ -63,6 +63,13 @@ class MetricsRepository:
         """Add new host to metrics."""
         self.conn.execute('''INSERT INTO hosts (host)
                                  VALUES (?)''',
+                          (host,))
+        self.conn.commit()
+
+    def delete_host(self: Self, host: str) -> None:
+        """Delete host from metrics."""
+        self.conn.execute('''DELETE FROM hosts
+                                 WHERE host = ?''',
                           (host,))
         self.conn.commit()
 

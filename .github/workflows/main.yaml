@@ -1,9 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   build:
@@ -31,4 +28,21 @@ jobs:
       run: |
         poetry run coverage run -m pytest
         poetry run coverage report --fail-under=60
+
+    - name: Mutation Testing
+      run: |
+        poetry run mutmut run --no-progress --CI
+        poetry run mutmut html
+
+    - name: 📤 Upload Mutation Test Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: mutmut-html-report
+        path: html/bookshelf
+
+    - name: 🗃️ Cache Mutation Test Artifacts
+      uses: actions/cache/save@v3
+      with:
+        path: .mutmut-cache
+        key: mutmut-cache-${{ github.ref_name }}-${{ hashFiles('bookshelf/*.py') }}
 

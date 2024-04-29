@@ -92,3 +92,20 @@ def test_get_metrics(in_memory_db):
         assert metrics[0][8] == 'filtered'
         assert metrics[0][9] == 'open'
         assert metrics[0][10] == 'open'
+
+
+def test_delete_host(in_memory_db):
+    with MetricsRepository(in_memory_db) as metrics_repo:
+        # Add a host to the database
+        metrics_repo.add_host('example.com')
+
+        # Verify that the host was added successfully
+        cursor = metrics_repo.conn.execute('''SELECT * FROM hosts''')
+        assert cursor.fetchone()[0] == 'example.com'
+
+        # Delete the host
+        metrics_repo.delete_host('example.com')
+
+        # Verify that the host was deleted
+        cursor = metrics_repo.conn.execute('''SELECT * FROM hosts''')
+        assert cursor.fetchone() is None
