@@ -1,5 +1,5 @@
 """Tests for collect_data.py."""
-from collect_data import collect_data,get_loss_and_latency,get_accessibility
+from backend.collect_data import collect_data,get_loss_and_latency,get_accessibility
 
 def test_collect_data() -> None:
     """Do call of stable service to test."""
