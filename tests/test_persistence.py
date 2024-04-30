@@ -1,3 +1,4 @@
+"""Tests for persistence.py."""
 import os
 from datetime import datetime
 
@@ -8,8 +9,9 @@ from backend.persistence import MetricsRepository
 
 # Fixture to create an in-memory SQLite database for testing
 @pytest.fixture
-def in_memory_db():
-    def delete_file(file_path):
+def in_memory_db() -> None:
+    """Do fixture to create an in-memory SQLite database."""
+    def delete_file(file_path: str) -> None :
         if os.path.exists(file_path):
             os.remove(file_path)
 
@@ -18,7 +20,8 @@ def in_memory_db():
 
 
 # Test cases for MetricsRepository class
-def test_save_record(in_memory_db):
+def test_save_record(in_memory_db: str) -> None:
+    """Do test cases for MetricsRepository class."""
     with MetricsRepository(in_memory_db) as metrics_repo:
         record = {
             "loss": 0.0,
@@ -46,7 +49,8 @@ def test_save_record(in_memory_db):
         assert result[10] == 'open'
 
 
-def test_add_host(in_memory_db):
+def test_add_host(in_memory_db: str) -> None:
+    """Do test add_host()."""
     with MetricsRepository(in_memory_db) as metrics_repo:
         metrics_repo.add_host('example.com')
         cursor = metrics_repo.conn.execute('''SELECT * FROM hosts''')
@@ -54,7 +58,8 @@ def test_add_host(in_memory_db):
         assert result[0] == 'example.com'
 
 
-def test_get_hosts(in_memory_db):
+def test_get_hosts(in_memory_db: str) -> None:
+    """Do test get_host()."""
     with MetricsRepository(in_memory_db) as metrics_repo:
         metrics_repo.add_host('example.com')
         hosts = metrics_repo.get_hosts()
@@ -62,7 +67,8 @@ def test_get_hosts(in_memory_db):
         assert hosts[0][0] == 'example.com'
 
 
-def test_get_metrics(in_memory_db):
+def test_get_metrics(in_memory_db: str) -> None:
+    """Do test get_metrics()."""
     with MetricsRepository(in_memory_db) as metrics_repo:
         current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         metrics_repo.conn.execute('''INSERT INTO metrics 
@@ -94,7 +100,8 @@ def test_get_metrics(in_memory_db):
         assert metrics[0][10] == 'open'
 
 
-def test_delete_host(in_memory_db):
+def test_delete_host(in_memory_db: str) -> None:
+    """Do test delete_host()."""
     with MetricsRepository(in_memory_db) as metrics_repo:
         # Add a host to the database
         metrics_repo.add_host('example.com')

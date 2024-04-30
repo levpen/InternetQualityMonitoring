@@ -1,5 +1,4 @@
 """Module for running frontend part."""
-# import json
 import sqlite3
 import streamlit as st
 import pandas as pd
@@ -82,12 +81,6 @@ with MetricsRepository(db_path) as metrics_repo:
   # print(host_to_monitor)
   if host_to_monitor:
     print_statistics(host_to_monitor, metrics_repo)
-
-  
-
-
-
-
 
 # def load_as_json(data: str) -> None:
 #     """Loads data as json."""

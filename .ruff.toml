@@ -60,4 +60,4 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [lint.per-file-ignores]
-"tests/test_collect_data.py" = ["S101"]
+"tests/*" = ["S101", "B017"]

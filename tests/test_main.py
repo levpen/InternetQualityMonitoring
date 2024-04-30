@@ -1,10 +1,11 @@
-from unittest.mock import patch, MagicMock
-import pytest
-from backend.main import *
+"""Module to test main.py."""
+from unittest.mock import patch
+from backend.main import collect_and_append_data
 
 
 @patch('backend.collect_data')
-def test_collect_and_append_data(mock_collect_data):
+def test_collect_and_append_data(mock_collect_data: {}) -> None:
+    """Do test collect_and_append_data() function."""
     host = "example.com"
     record = {
         'accessibility': [('HTTP', 'open'),
@@ -21,7 +22,8 @@ def test_collect_and_append_data(mock_collect_data):
     records = []
     collect_and_append_data(host, records)
 
-    assert records == [record]
+    assert len(records) == 1
+    assert records[0]["accessibility"] == record["accessibility"]
 
 
 

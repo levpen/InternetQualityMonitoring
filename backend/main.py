@@ -1,6 +1,6 @@
 """Daemon that collect data from hosts."""
-from persistence import MetricsRepository
-from collect_data import collect_data
+from backend.persistence import MetricsRepository
+from backend.collect_data import collect_data
 from time import sleep
 from threading import Thread
 
