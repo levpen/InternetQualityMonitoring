@@ -1,5 +1,7 @@
 # InternetQualityMonitoring
 
+[![CI](https://github.com/levpen/InternetQualityMonitoring/actions/workflows/main.yaml/badge.svg)](https://github.com/levpen/InternetQualityMonitoring/actions/workflows/main.yaml)
+
 ## Project Description
 
 The Internet Quality Monitoring project aims to provide a solution for tracking and visualizing internet quality indicators within a university campus environment. It helps identify and monitor issues such as packet loss, latency, and accessibility of various resources and protocols. The project includes a web dashboard for easy visualization of the collected data.
